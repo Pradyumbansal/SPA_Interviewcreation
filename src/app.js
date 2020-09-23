@@ -7,16 +7,35 @@ import Participants from './views/pages/Participants.js'
 import ShowParticipant from './views/pages/ShowParticipant.js'
 import Navbar       from './views/components/Navbar.js'
 import Bottombar    from './views/components/Bottombar.js'
-import NewParticipant        from './views/pages/newparticipant.js'
+import NewInterview        from './views/pages/newInterview.js'
 import Utils        from './services/Utils.js'
+import NewParticipant from './views/pages/NewParticipant.js'
+import EditParticipant from './views/pages/EditParticipant.js'
+import EditInterview from './views/pages/EditInterview.js'
+import routing from './services/routing.js'
+
 
 const routes = {
     '/'              : Interviews
     , '/p/:id'       : InterviewShow
     , '/participants' : Participants
     , '/q/:id'      : ShowParticipant
+    , '/new_interview' : NewInterview
     , '/new_participant' : NewParticipant
+    , '/edit_participant/:id' : EditParticipant
+    , '/edit_interview/:id' : EditInterview
 };
+
+routing.mapping = {
+    "Interviews" : '/', 
+    "InterviewShow" : '#/p/:id',
+    'Participants' : '#/participants',
+    'ShowParticipant' : '#/q/:id', 
+    'NewInterview' : '#/new_interview',
+    'NewParticipant' : '#/new_participant',
+    "EditParticipant" : '#/edit_participant/:id',
+    "EditInterview" : '#/edit_interview/:id' 
+}
 
 
 const router = async () => {

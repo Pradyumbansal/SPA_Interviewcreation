@@ -1,4 +1,5 @@
-
+import routing from '../../services/routing.js';
+import Utils        from './../../services/Utils.js'
 let getParticipants = async (url) => {
     const options = {
        method: 'GET',
@@ -16,16 +17,23 @@ let getParticipants = async (url) => {
    }
 }
 
+
 let Participants = {
    render : async () => {
        let participants = await getParticipants(`http://localhost:3000/participants`)
        let view =  /*html*/`
            <section class="section">
+           <a href="#/new_participant"> New Participant </a>
+           <br>
                <h1> All participants </h1>
                <ul>
                     ${ participants.map(participant => 
-                        ///*html*/`<li><a href="#/p/${participants.id}">${participants.id}</a></li>`
-                        /*html*/`<li><a href="#/q/${participant.id}">${participant.name}</a></l1>`
+                        `<li>  Name :  ${participant.name} |  Participant type :  ${participant.participanttype} 
+                        </li>
+                        <li><a href="#/q/${participant.id}">Show</a> | 
+                        <a href="#/edit_participant/${participant.id}">edit</a>
+                        </li>
+                        `
                         ).join('\n ')
                     }
                 </ul>
@@ -34,6 +42,7 @@ let Participants = {
        return view
    }
    , after_render: async () => {
+    
    }
 
 }

@@ -1,18 +1,33 @@
-import routing from '../../services/routing.js';
 import Utils        from './../../services/Utils.js'
+import routing from '../../services/routing.js';
 
-let PostUsers = async (data) => {
-    // let form = new FormData();
-    // form.append('file', resume)
+let PostUsers = async (data, id) => {
     const options = {
-       method: 'POST',
+       method: 'PATCH',
        headers: {
            'Content-Type': 'application/json'
        },
        body: JSON.stringify(data)
    };
    try {
-       const response = await fetch(`http://localhost:3000/participants/`,  options)
+       const response = await fetch(`http://localhost:3000/participants/` + id,  options)
+       const json = await response.json();
+        console.log(json)
+       return json
+   } catch (err) {
+       alert(err)
+       console.log('Error getting documents', err)
+   }
+}
+let GetUsers = async (id) => {
+    const options = {
+       method: 'GET',
+       headers: {
+           'Content-Type': 'application/json'
+       }
+   };
+   try {
+       const response = await fetch(`http://localhost:3000/participants/` + id,  options)
        const json = await response.json();
         console.log(json)
        return json
@@ -20,25 +35,24 @@ let PostUsers = async (data) => {
        console.log('Error getting documents', err)
    }
 }
-
-let NewParticipant = {
+let EditParticipant = {
     
-
     render: async () => {
-        
+        let request = Utils.parseRequestURL()
+        let user = await GetUsers(request.id)
         return `
-        <form id = "myForm">
+        <form>
             <div>
                 Name
-                <input class="form-control" type="text"  name="name" id="name" >
+                <input class="form-control" type="text"  name="name" id="name" value = ${user["participant"].name}>
             </div>
                 <br/>
             <div>
                 Email
-            <input class="form-control" type="text" name="email" id="email" >
+            <input class="form-control" type="text" name="email" id="email" value = ${user["participant"].email}>
             </div>
             <br/>
-            <div id = "participanttype">
+            <div id = "participanttype" selected = ${user["participant"].participanttype}>
                 Choose Participant Type
                 <br/>
                     <input type="radio" id="interviewee" name="participanttype" value="Interviewee">
@@ -48,9 +62,9 @@ let NewParticipant = {
             </div>
             <div id = "temp">
                 Attach resume
-                <input type = "file" name = "resume" id = "resume" accept="application/pdf,application/vnd.ms-excel">
+                <input type = "file" name = "resume" id = "resume" accept="application/pdf,application/vnd.ms-excel" >
             </div>
-            <button type="button" id="AddParticipant">CREATE</button>
+            <button type="button" id="edit">EDIT</button>
         <form>`
     }
      
@@ -64,26 +78,25 @@ let NewParticipant = {
             document.getElementById("temp").innerHTML = store
         })
         
-        document.getElementById("AddParticipant").addEventListener ("click",  async () => {
+        document.getElementById("edit").addEventListener ("click",  async () => {
             let name     = document.getElementById("name").value;
             let email      = document.getElementById("email").value;
             let participanttype = document.getElementById("interviewee").checked ? "Interviewee" : "Interviewer";
-            let resume = document.getElementById("resume")
+            let resume = document.getElementById("resume");
             let data = {
                     "name" : name,
                     "email" : email,
                     "participanttype" : participanttype,
-                    "resume" : resume           
+                    "resume" : resume
+
             };
-            // let myForm = document.getElementById('myForm');
-            // console.log(myForm["resume"].value)
-            // let formData = new FormData(myForm);
-            // console.log(formData);
-            let response = await PostUsers(data);
+            console.log(data);
+            let request = Utils.parseRequestURL()
+            let response = await PostUsers(data, request.id);
             routing.render("Participants")
             
         })
     }
 }
 
-export default NewParticipant
+export default EditParticipant
