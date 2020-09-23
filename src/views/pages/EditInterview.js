@@ -51,7 +51,7 @@ let EditInterview = {
         let start = interview.st_time.substr(0, interview.st_time.length - 1);
         let end = interview.en_time.substr(0, interview.en_time.length - 1);
         return `
-        <form>
+        <form >
             <div>
                 Start Time
                 <input class="form-control" type="datetime-local"  name="startTime" id="startTime" value = ${start}>
@@ -101,6 +101,7 @@ let EditInterview = {
                     "id" : request.id
 
             };
+            const form = document.getElementById( "new_interview" );
             console.log(data);
             let response = await PostUsers(data, request.id);
             routing.render("Interviews")

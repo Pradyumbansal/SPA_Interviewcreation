@@ -27,7 +27,7 @@ let NewParticipant = {
     render: async () => {
         
         return `
-        <form id = "myForm">
+        <form id = "new_interview" method="post" enctype='multipart/form-data'>
             <div>
                 Name
                 <input class="form-control" type="text"  name="name" id="name" >
@@ -35,7 +35,7 @@ let NewParticipant = {
                 <br/>
             <div>
                 Email
-            <input class="form-control" type="text" name="email" id="email" >
+                <input class="form-control" type="text" name="email" id="email" >
             </div>
             <br/>
             <div id = "participanttype">
@@ -50,11 +50,10 @@ let NewParticipant = {
                 Attach resume
                 <input type = "file" name = "resume" id = "resume" accept="application/pdf,application/vnd.ms-excel">
             </div>
-            <button type="button" id="AddParticipant">CREATE</button>
+            <input type="submit" value="Create Interview">
         <form>`
     }
      
-
     , after_render: async () => {
         let store = document.getElementById("temp").innerHTML;
         document.getElementById("interviewer").addEventListener ("click", async () => {
@@ -63,27 +62,59 @@ let NewParticipant = {
         document.getElementById("interviewee").addEventListener ("click", async () => {
             document.getElementById("temp").innerHTML = store
         })
-        
-        document.getElementById("AddParticipant").addEventListener ("click",  async () => {
-            let name     = document.getElementById("name").value;
-            let email      = document.getElementById("email").value;
-            let participanttype = document.getElementById("interviewee").checked ? "Interviewee" : "Interviewer";
-            let resume = document.getElementById("resume")
-            let data = {
-                    "name" : name,
-                    "email" : email,
-                    "participanttype" : participanttype,
-                    "resume" : resume           
-            };
-            // let myForm = document.getElementById('myForm');
-            // console.log(myForm["resume"].value)
-            // let formData = new FormData(myForm);
-            // console.log(formData);
-            let response = await PostUsers(data);
-            routing.render("Participants")
-            
-        })
+        function sendData(form) {
+            const XHR = new XMLHttpRequest();
+            const FD = new FormData( form );
+            console.log(FD)
+            XHR.addEventListener( "load", function(event) {
+                console.log(event)
+                console.log(event.response)
+                routing.render("Participants")
+            } );
+            // Define what happens in case of error
+            // XHR.addEventListener( "error", function( event ) {
+            // alert( 'Oops! Something went wrong.' );
+            // } );
+            // Set up our request
+            XHR.open( "POST", "http://localhost:3000/participants" );
+            XHR.send( FD );
+        }
+        const form = document.getElementById( "new_interview" );
+        console.log(form.elements)
+        form.addEventListener( "submit", function ( event ) {
+            event.preventDefault();
+            sendData(form);
+        });
     }
+    // , after_render: async () => {
+    //     let store = document.getElementById("temp").innerHTML;
+    //     document.getElementById("interviewer").addEventListener ("click", async () => {
+    //         document.getElementById("temp").innerHTML = ""
+    //     })
+    //     document.getElementById("interviewee").addEventListener ("click", async () => {
+    //         document.getElementById("temp").innerHTML = store
+    //     })
+        
+    //     document.getElementById("AddParticipant").addEventListener ("click",  async () => {
+    //         let name     = document.getElementById("name").value;
+    //         let email      = document.getElementById("email").value;
+    //         let participanttype = document.getElementById("interviewee").checked ? "Interviewee" : "Interviewer";
+    //         let resume = document.getElementById("resume")
+    //         let data = {
+    //                 "name" : name,
+    //                 "email" : email,
+    //                 "participanttype" : participanttype,
+    //                 "resume" : resume           
+    //         };
+    //         // let myForm = document.getElementById('myForm');
+    //         // console.log(myForm["resume"].value)
+    //         // let formData = new FormData(myForm);
+    //         // console.log(formData);
+    //         let response = await PostUsers(data);
+    //         routing.render("Participants")
+            
+    //     })
+    // }
 }
 
 export default NewParticipant

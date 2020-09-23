@@ -5,15 +5,18 @@ let PostUsers = async (data, id) => {
     const options = {
        method: 'PATCH',
        headers: {
-           'Content-Type': 'application/json'
+           'Content-Type': 'multipart/form-data'
        },
        body: JSON.stringify(data)
    };
    try {
        const response = await fetch(`http://localhost:3000/participants/` + id,  options)
-       const json = await response.json();
+        console.log(response)
+        const json = await response.json();
+        con
         console.log(json)
-       return json
+        return json
+        // return response
    } catch (err) {
        alert(err)
        console.log('Error getting documents', err)
@@ -41,7 +44,7 @@ let EditParticipant = {
         let request = Utils.parseRequestURL()
         let user = await GetUsers(request.id)
         return `
-        <form>
+        <form id = "edit_participant" method="post" enctype='multipart/form-data'>
             <div>
                 Name
                 <input class="form-control" type="text"  name="name" id="name" value = ${user["participant"].name}>
@@ -79,22 +82,26 @@ let EditParticipant = {
         })
         
         document.getElementById("edit").addEventListener ("click",  async () => {
-            let name     = document.getElementById("name").value;
-            let email      = document.getElementById("email").value;
-            let participanttype = document.getElementById("interviewee").checked ? "Interviewee" : "Interviewer";
-            let resume = document.getElementById("resume");
-            let data = {
-                    "name" : name,
-                    "email" : email,
-                    "participanttype" : participanttype,
-                    "resume" : resume
+            // let name     = document.getElementById("name").value;
+            // let email      = document.getElementById("email").value;
+            // let participanttype = document.getElementById("interviewee").checked ? "Interviewee" : "Interviewer";
+            // let resume = document.getElementById("resume");
+            // let data = {
+            //         "name" : name,
+            //         "email" : email,
+            //         "participanttype" : participanttype,
+            //         "resume" : resume
 
-            };
-            console.log(data);
+            // };
+            // console.log(data);
             let request = Utils.parseRequestURL()
-            let response = await PostUsers(data, request.id);
+            // let response = await PostUsers(data, request.id);
+            // routing.render("Participants")
+            const form = document.getElementById( "edit_participant" );
+            const FD = new FormData( form );
+            console.log(FD);
+            let response = await PostUsers(FD, request.id);
             routing.render("Participants")
-            
         })
     }
 }
