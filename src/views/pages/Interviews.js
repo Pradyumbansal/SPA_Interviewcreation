@@ -20,12 +20,6 @@ let getReq = async (url) => {
 let Interviews = {
     render : async () => {
         let Interviews = await getReq(`http://localhost:3000/interviews`)
-        let users = await getReq(`http://localhost:3000/participants`)
-        var dict = []; // create an empty array
-
-        for (var i = 0; i < users.length; i++) {
-            dict[users[i].id] = users[i].name
-        }
 
         let view =  /*html*/`
             <section class="section">

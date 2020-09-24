@@ -26,10 +26,20 @@ let PostUsers = async (data) => {
        body: JSON.stringify(data)
    };
    try {
-       const response = await fetch(`http://localhost:3000/interviews/`,  options)
-       const json = await response.json();
+        const response = await fetch(`http://localhost:3000/interviews/`,  options)
+        const json = await response.json();
         console.log(json)
-       return json
+        console.log(response.status)
+        if (response.status == 401) {
+            var o = json;
+            for (var key in o) {
+                if (o.hasOwnProperty(key)) {
+                    alert(key, o[key]);
+                }
+            }   
+        }
+        json["status"] = response.status;
+        return json
    } catch (err) {
        console.log('Error getting documents', err)
    }
@@ -92,6 +102,7 @@ let NewInterview = {
             };
             console.log(data);
             let response = await PostUsers(data);
+            if (response["status"] != 401)
             routing.render("Interviews")
             
         })

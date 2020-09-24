@@ -27,14 +27,20 @@ let PostUsers = async (data, id) => {
        body: JSON.stringify(data)
    };
    try {
-
        const response = await fetch(`http://localhost:3000/interviews/` + id,  options)
-        console.log(response)
-        const json = await response.json();
-        con
-        console.log(json)
-        return json
-        // return response
+       const json = await response.json();
+       console.log(json)
+       console.log(response.status)
+       if (response.status == 401) {
+           var o = json;
+           for (var key in o) {
+               if (o.hasOwnProperty(key)) {
+                   alert(key, o[key]);
+               }
+           }   
+       }
+       json["status"] = response.status;
+       return json
    } catch (err) {
        alert(err)
        console.log('Error getting documents', err)
@@ -101,9 +107,9 @@ let EditInterview = {
                     "id" : request.id
 
             };
-            const form = document.getElementById( "new_interview" );
             console.log(data);
             let response = await PostUsers(data, request.id);
+            if (response["status"] != 401)
             routing.render("Interviews")
             
         })

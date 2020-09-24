@@ -4,19 +4,23 @@ import routing from '../../services/routing.js';
 let PostUsers = async (data, id) => {
     const options = {
        method: 'PATCH',
-       headers: {
-           'Content-Type': 'multipart/form-data'
-       },
-       body: JSON.stringify(data)
+       body: data
    };
    try {
        const response = await fetch(`http://localhost:3000/participants/` + id,  options)
-        console.log(response)
-        const json = await response.json();
-        con
-        console.log(json)
-        return json
-        // return response
+       const json = await response.json();
+       console.log(response)
+       console.log(json)
+       if (response.status == 401) {
+           var o = json;
+           for (var key in o) {
+               if (o.hasOwnProperty(key)) {
+                   alert(key, o[key]);
+               }
+           }   
+       }
+       json["status"] = response.status;
+       return json
    } catch (err) {
        alert(err)
        console.log('Error getting documents', err)
@@ -44,7 +48,7 @@ let EditParticipant = {
         let request = Utils.parseRequestURL()
         let user = await GetUsers(request.id)
         return `
-        <form id = "edit_participant" method="post" enctype='multipart/form-data'>
+        <form id = "edit_participant">
             <div>
                 Name
                 <input class="form-control" type="text"  name="name" id="name" value = ${user["participant"].name}>
@@ -55,7 +59,7 @@ let EditParticipant = {
             <input class="form-control" type="text" name="email" id="email" value = ${user["participant"].email}>
             </div>
             <br/>
-            <div id = "participanttype" selected = ${user["participant"].participanttype}>
+            <div id = "participanttype" >
                 Choose Participant Type
                 <br/>
                     <input type="radio" id="interviewee" name="participanttype" value="Interviewee">
@@ -82,26 +86,16 @@ let EditParticipant = {
         })
         
         document.getElementById("edit").addEventListener ("click",  async () => {
-            // let name     = document.getElementById("name").value;
-            // let email      = document.getElementById("email").value;
-            // let participanttype = document.getElementById("interviewee").checked ? "Interviewee" : "Interviewer";
-            // let resume = document.getElementById("resume");
-            // let data = {
-            //         "name" : name,
-            //         "email" : email,
-            //         "participanttype" : participanttype,
-            //         "resume" : resume
-
-            // };
-            // console.log(data);
+     
             let request = Utils.parseRequestURL()
-            // let response = await PostUsers(data, request.id);
-            // routing.render("Participants")
+            
             const form = document.getElementById( "edit_participant" );
             const FD = new FormData( form );
             console.log(FD);
             let response = await PostUsers(FD, request.id);
+            if (response["status"] != 401)
             routing.render("Participants")
+
         })
     }
 }
